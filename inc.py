@@ -17,11 +17,13 @@ from model import (
     Track,
     Car,
     Initbefore,
+    Initlast,
     Before,
     Last,
     Predecessor,
     Shunt
 )
+from visualize import Visualize, VisualizeText, VisualizeBasic
 
 
 class IncApp(Application):
@@ -34,9 +36,8 @@ class IncApp(Application):
 
     @staticmethod
     def _on_model(model):
-        solution = model.facts(atoms=True)
-        befores = solution.query(Before).all()
-        print(list(befores))
+        vis = VisualizeText()
+        vis.visualize(model)
         
 
     def main(self, ctl_: Control, files):
@@ -56,8 +57,11 @@ class IncApp(Application):
         # solution check of each step t.
         # ctl.add("check", ["t"], "#external query(t).")
         init_facts = [
+            Initbefore(first_car=5, second_car=4, track=1),
+            Initbefore(first_car=4, second_car=3, track=1),
             Initbefore(first_car=3, second_car=2, track=1),
-            Initbefore(first_car=2, second_car=1, track=1)
+            Initbefore(first_car=2, second_car=1, track=1),
+            Initlast(car=1, track=1)
         ]
         instance = FactBase(init_facts)
         ctl.add_facts(instance)

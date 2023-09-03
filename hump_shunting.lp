@@ -1,11 +1,9 @@
 
 %% input
 
-#const tracks = 2.
-#const cars = 3.
+#const tracks = 3.
+#const cars = 5.
 
-track(1..tracks).
-car(1..cars).
 
 % before(i, j, t, m)
 % car i precedes car j on track t during move m
@@ -14,16 +12,29 @@ car(1..cars).
 
 #program base.
 
+track(1..tracks).
+car(1..cars).
+
 before(I, J, T, 0) :- initbefore(I, J, T).
+last(I, T, 0) :- initlast(I, T).
 
 #program step(t).
 
 %% derive
 
 % last(i, t, m)
-% car i is the last car on track t during move m
+% car i is the last car on track T during move t
+last(J, T, t) :- car(I),
+					 			 car(J),
+					 			 track(T),
+								 before(I, J, T, t),
+					 			 #count{ K : before(J, K, T, t), car(K) } = 0.
+
 { last(I, T, t) : track(T) } = 1 :- car(I),
 																			#count{ J : before(I, J, T, t), car(J) } = 0.
+
+on(I, T, t) :- car(I), car(J), track(T), before(I, J, T, t).
+on(I, T, t) :- car(I), track(T), last(I, T, t).
 
 % predecessor(i, j, m)
 % car i is before car j on some track during move m
@@ -35,6 +46,11 @@ before(I, J, T, t) :- before(I, J, T, t-1),
 											car(I),
 											car(J),
 											track(T).
+
+last(I, T, t) :- last(I, T, t),
+					 			 not shunt(T, t-1),
+								 car(I),
+								 track(T).
 
 %% choose
 
@@ -51,6 +67,10 @@ before(I, J, T, t) :- before(I, J, T, t-1),
 :- predecessor(I, J, t), predecessor(J, I, t-1).
 
 :- #count{ I,T : before(I, J, T, t), car(I), track(T)} > 1, car(J).
+
+:- on(I, T1, t-1), on(J, T2, t-1), shunt(T2, t-1), T1 != T2, before(J, I, T1, t).
+
+:- on(I, T1, t-1), not shunt(T1, t-1), on(I, T2, t), T1 != T2.
 
 #program check(t).
 

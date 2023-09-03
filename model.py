@@ -13,6 +13,10 @@ class Initbefore(Predicate):
     second_car=IntegerField
     track=IntegerField
     
+class Initlast(Predicate):
+    car=IntegerField
+    track=IntegerField
+
 class Before(Predicate):
     first_car=IntegerField
     second_car=IntegerField
