@@ -1,36 +1,36 @@
 
-from clorm import Predicate, ConstantField, IntegerField
+from clorm import Predicate, IntegerField
 
 
 class Track(Predicate):
-    idx=ConstantField
+    idx=IntegerField
 
 class Car(Predicate):
-    idx=ConstantField
+    idx=IntegerField
 
-class InitBefore(Predicate):
-    first_car=ConstantField
-    second_car=ConstantField
-    track=ConstantField
+class Initbefore(Predicate):
+    first_car=IntegerField
+    second_car=IntegerField
+    track=IntegerField
     
 class Before(Predicate):
-    first_car=ConstantField
-    second_car=ConstantField
-    track=ConstantField
+    first_car=IntegerField
+    second_car=IntegerField
+    track=IntegerField
     move=IntegerField
 
 class Last(Predicate):
-    car=ConstantField
-    track=ConstantField
+    car=IntegerField
+    track=IntegerField
     move=IntegerField
 
 class Predecessor(Predicate):
-    first_car=ConstantField
-    second_car=ConstantField
+    first_car=IntegerField
+    second_car=IntegerField
     move=IntegerField
 
 class Shunt(Predicate):
-    track=ConstantField
+    track=IntegerField
     move=IntegerField
 
 

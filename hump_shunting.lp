@@ -9,13 +9,12 @@ car(1..cars).
 
 % before(i, j, t, m)
 % car i precedes car j on track t during move m
-init_before(3, 2, 1).
-init_before(2, 1, 1).
+% init_before(3, 2, 1).
+% init_before(2, 1, 1).
 
 #program base.
 
-before(I, J, T, 0) :- init_before(I, J, T).
-
+before(I, J, T, 0) :- initbefore(I, J, T).
 
 #program step(t).
 
@@ -54,6 +53,8 @@ before(I, J, T, t) :- before(I, J, T, t-1),
 :- #count{ I,T : before(I, J, T, t), car(I), track(T)} > 1, car(J).
 
 #program check(t).
+
+#external query(t).
 
 :- before(I, J, T, t), I > J, query(t).
 

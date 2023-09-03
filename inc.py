@@ -4,11 +4,24 @@ https://github.com/potassco/clingo/blob/master/examples/clingo/multishot/inc.py
 """
 
 import sys
+import click
 
 from clingo.application import clingo_main, Application, ApplicationOptions
-from clingo.control import Control
 from clingo.solving import SolveResult
 from clingo.symbol import Function, Number
+
+from clorm.clingo import Control
+from clorm import FactBase
+
+from model import (
+    Track,
+    Car,
+    Initbefore,
+    Before,
+    Last,
+    Predecessor,
+    Shunt
+)
 
 
 class IncApp(Application):
@@ -20,24 +33,34 @@ class IncApp(Application):
         pass
 
     @staticmethod
-    def _on_model(m):
-        print("atoms")
-        print("  positive: " + ", ".join(map(str, m.symbols(atoms=True))))
-        print("  negative: " + ", ".join(map(str, m.symbols(atoms=True, complement=True))))
+    def _on_model(model):
+        solution = model.facts(atoms=True)
+        befores = solution.query(Before).all()
+        print(list(befores))
+        
 
-
-    def main(self, ctl: Control, files):
+    def main(self, ctl_: Control, files):
         """The main function implementing incremental solving."""
         if not files or len(files) == 0:
             print("Usage: python inc.py <theory1.lp> [<theoryN.lp> ...]")
             exit(1)
 
+        ctl = Control(
+            unifier=[Track, Car, Initbefore, Before, Last, Predecessor, Shunt],
+            control_=ctl_
+        )
         for file in files:
             ctl.load(file)
 
         # Add the external atom "query" that selectively turns on the
         # solution check of each step t.
-        ctl.add("check", ["t"], "#external query(t).")
+        # ctl.add("check", ["t"], "#external query(t).")
+        init_facts = [
+            Initbefore(first_car=3, second_car=2, track=1),
+            Initbefore(first_car=2, second_car=1, track=1)
+        ]
+        instance = FactBase(init_facts)
+        ctl.add_facts(instance)
 
         step = 0
         ret = None
