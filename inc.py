@@ -57,6 +57,14 @@ class IncApp(Application):
         # solution check of each step t.
         # ctl.add("check", ["t"], "#external query(t).")
         init_facts = [
+            Car(idx=1),
+            Car(idx=2),
+            Car(idx=3),
+            Car(idx=4),
+            Car(idx=5),
+            Track(idx=1),
+            Track(idx=2),
+            Track(idx=3),
             Initbefore(first_car=5, second_car=4, track=1),
             Initbefore(first_car=4, second_car=3, track=1),
             Initbefore(first_car=3, second_car=2, track=1),
